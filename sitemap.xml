@@ -2,16 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://murphypei.github.io/tags/index.html</loc>
+    <loc>https://murphypei.github.io/blog/2021/09/android-gdbserver.html</loc>
     
-    <lastmod>2021-09-06T09:24:43.090Z</lastmod>
+    <lastmod>2021-09-06T10:09:46.500Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://murphypei.github.io/categories/index.html</loc>
+    <loc>https://murphypei.github.io/tags/index.html</loc>
     
-    <lastmod>2021-09-06T09:24:43.040Z</lastmod>
+    <lastmod>2021-09-06T09:24:43.090Z</lastmod>
     
   </url>
   
@@ -121,14 +121,14 @@
   </url>
   
   <url>
-    <loc>https://murphypei.github.io/blog/2019/10/cuda-parallel.html</loc>
+    <loc>https://murphypei.github.io/blog/2021/03/git-symlink.html</loc>
     
     <lastmod>2021-09-06T09:24:43.040Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://murphypei.github.io/blog/2021/03/cpp-sizeof.html</loc>
+    <loc>https://murphypei.github.io/blog/2019/10/cuda-parallel.html</loc>
     
     <lastmod>2021-09-06T09:24:43.040Z</lastmod>
     
@@ -163,6 +163,13 @@
   </url>
   
   <url>
+    <loc>https://murphypei.github.io/categories/index.html</loc>
+    
+    <lastmod>2021-09-06T09:24:43.040Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://murphypei.github.io/blog/2019/12/pca-repost.html</loc>
     
     <lastmod>2021-09-06T09:24:43.040Z</lastmod>
@@ -184,14 +191,14 @@
   </url>
   
   <url>
-    <loc>https://murphypei.github.io/blog/2020/09/pytorch-distributed.html</loc>
+    <loc>https://murphypei.github.io/blog/2020/09/entrogy-kld.html</loc>
     
     <lastmod>2021-09-06T09:24:43.040Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://murphypei.github.io/blog/2020/09/entrogy-kld.html</loc>
+    <loc>https://murphypei.github.io/blog/2020/09/pytorch-distributed.html</loc>
     
     <lastmod>2021-09-06T09:24:43.040Z</lastmod>
     
@@ -240,16 +247,9 @@
   </url>
   
   <url>
-    <loc>https://murphypei.github.io/blog/2021/03/git-symlink.html</loc>
+    <loc>https://murphypei.github.io/blog/2021/03/cpp-sizeof.html</loc>
     
     <lastmod>2021-09-06T09:24:43.040Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://murphypei.github.io/blog/2018/07/kernel_method.html</loc>
-    
-    <lastmod>2021-09-06T09:24:43.030Z</lastmod>
     
   </url>
   
@@ -269,13 +269,6 @@
   
   <url>
     <loc>https://murphypei.github.io/blog/2018/08/cpp-inline-define.html</loc>
-    
-    <lastmod>2021-09-06T09:24:43.030Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://murphypei.github.io/blog/2018/08/python-max-index.html</loc>
     
     <lastmod>2021-09-06T09:24:43.030Z</lastmod>
     
@@ -304,6 +297,13 @@
   
   <url>
     <loc>https://murphypei.github.io/blog/2018/08/mxnet-install-ndarray.html</loc>
+    
+    <lastmod>2021-09-06T09:24:43.030Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://murphypei.github.io/blog/2018/08/python-max-index.html</loc>
     
     <lastmod>2021-09-06T09:24:43.030Z</lastmod>
     
@@ -436,14 +436,14 @@
   </url>
   
   <url>
-    <loc>https://murphypei.github.io/blog/2019/02/python-copy-virtualenv.html</loc>
+    <loc>https://murphypei.github.io/blog/2019/01/cpp-static-member.html</loc>
     
     <lastmod>2021-09-06T09:24:43.030Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://murphypei.github.io/blog/2019/01/cpp-static-member.html</loc>
+    <loc>https://murphypei.github.io/blog/2019/02/python-copy-virtualenv.html</loc>
     
     <lastmod>2021-09-06T09:24:43.030Z</lastmod>
     
@@ -576,14 +576,14 @@
   </url>
   
   <url>
-    <loc>https://murphypei.github.io/blog/2017/02/sensetime-interview.html</loc>
+    <loc>https://murphypei.github.io/blog/2019/06/link-sort.html</loc>
     
     <lastmod>2021-09-06T09:24:43.030Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://murphypei.github.io/blog/2019/07/longest-unrepeat-substring.html</loc>
+    <loc>https://murphypei.github.io/blog/2017/02/sensetime-interview.html</loc>
     
     <lastmod>2021-09-06T09:24:43.030Z</lastmod>
     
@@ -814,6 +814,13 @@
   </url>
   
   <url>
+    <loc>https://murphypei.github.io/blog/2017/11/numpy-axis.html</loc>
+    
+    <lastmod>2021-09-06T09:24:43.030Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://murphypei.github.io/blog/2017/02/ipc.html</loc>
     
     <lastmod>2021-09-06T09:24:43.030Z</lastmod>
@@ -1010,13 +1017,6 @@
   </url>
   
   <url>
-    <loc>https://murphypei.github.io/blog/2017/11/numpy-axis.html</loc>
-    
-    <lastmod>2021-09-06T09:24:43.030Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://murphypei.github.io/blog/2017/12/python-multiprocess.html</loc>
     
     <lastmod>2021-09-06T09:24:43.030Z</lastmod>
@@ -1059,6 +1059,13 @@
   </url>
   
   <url>
+    <loc>https://murphypei.github.io/blog/2018/04/docker-registry.html</loc>
+    
+    <lastmod>2021-09-06T09:24:43.030Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://murphypei.github.io/blog/2017/03/linux-io-multiplexing.html</loc>
     
     <lastmod>2021-09-06T09:24:43.030Z</lastmod>
@@ -1094,7 +1101,7 @@
   </url>
   
   <url>
-    <loc>https://murphypei.github.io/blog/2018/04/docker-registry.html</loc>
+    <loc>https://murphypei.github.io/blog/2018/04/linux-redirect-pipe.html</loc>
     
     <lastmod>2021-09-06T09:24:43.030Z</lastmod>
     
@@ -1108,7 +1115,7 @@
   </url>
   
   <url>
-    <loc>https://murphypei.github.io/blog/2018/04/linux-redirect-pipe.html</loc>
+    <loc>https://murphypei.github.io/blog/2018/05/io-block-sync.html</loc>
     
     <lastmod>2021-09-06T09:24:43.030Z</lastmod>
     
@@ -1129,13 +1136,6 @@
   </url>
   
   <url>
-    <loc>https://murphypei.github.io/blog/2018/05/io-block-sync.html</loc>
-    
-    <lastmod>2021-09-06T09:24:43.030Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://murphypei.github.io/blog/2018/05/ftok.html</loc>
     
     <lastmod>2021-09-06T09:24:43.030Z</lastmod>
@@ -1150,7 +1150,14 @@
   </url>
   
   <url>
-    <loc>https://murphypei.github.io/blog/2019/06/link-sort.html</loc>
+    <loc>https://murphypei.github.io/blog/2018/07/kernel_method.html</loc>
+    
+    <lastmod>2021-09-06T09:24:43.030Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://murphypei.github.io/blog/2019/07/longest-unrepeat-substring.html</loc>
     
     <lastmod>2021-09-06T09:24:43.030Z</lastmod>
     

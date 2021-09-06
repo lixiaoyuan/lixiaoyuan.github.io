@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://murphypei.github.io/"/>
-  <updated>2021-09-06T09:24:43.040Z</updated>
+  <updated>2021-09-06T10:09:46.500Z</updated>
   <id>https://murphypei.github.io/</id>
   
   <author>
@@ -15,6 +15,36 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>使用 gdbserver 调试 Android Native 程序</title>
+    <link href="https://murphypei.github.io//blog/2021/09/android-gdbserver.html"/>
+    <id>https://murphypei.github.io//blog/2021/09/android-gdbserver.html</id>
+    <published>2021-09-06T09:40:10.000Z</published>
+    <updated>2021-09-06T10:09:46.500Z</updated>
+    
+    <content type="html"><![CDATA[<p>使用 Android NDK 编译得到 Android native program，可以直接 push 到手机上运行，但是没办法直接用 gdb debug。</p><a id="more"></a><p>为此，我们需要使用 gdbserver，也就是 gdb 远程调试功能。原理就不讲了，我自己尝试的过程中发现网上写的教程都是相互转载的，乱七八糟，不知所云。本文写原理（谷歌可查），仅仅记录下我已经确认可行的调试过程。</p><ol><li>首先，把 <code>$NDK/prebuilt/android-arm64/gdbserver/gdbserver</code> 以及要调试的程序 push 到手机上（任意文件夹）。</li><li>在手机上启动 gdbserver。<code>gdbserver :9090 &lt;exec&gt;</code>。其中 <code>:9090</code> 表示 gdbserver 监听手机的 9090 端口。会显示 <code>Listening on port 9090</code> 类似信息。如果有本地 lib，记得设置 <code>LD_LIBRARY_PATH</code> 环境变量。</li><li>设置端口转发。<code>adb shell tcp:9090 tcp:9090</code>，表示将本地 9090 端口转发到手机的 9090 端口。</li><li>本地启动 gdb。<code>$NDK/prebuilt/linux-x86_64/bin/gdb</code>。进入 gdb 调试页面。</li><li>设置调试对象。<code>target remote :9090</code>。调试本地的 9090 端口，同时也是手机的 9090 端口，也就是 gdbserver，连接成功之后， gdbserver 那边会显示 <code>Remote debugging from host 127.0.0.1</code> 字样。</li></ol><p>Android gdbserver 和 Linux gdb 有一些命令不太一样，但是很多还是相同的。启动程序不用 r，用 continue。</p><p>用 vscode 也可以，把上述流程弄到 vscode 的 task.json 中就行，只是觉得更麻烦了，所以没必要。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;使用 Android NDK 编译得到 Android native program，可以直接 push 到手机上运行，但是没办法直接用 gdb debug。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="C/C++" scheme="https://murphypei.github.io/categories/C-C/"/>
+    
+    
+      <category term="C++" scheme="https://murphypei.github.io/tags/C/"/>
+    
+      <category term="gdbserver" scheme="https://murphypei.github.io/tags/gdbserver/"/>
+    
+      <category term="gdb remote" scheme="https://murphypei.github.io/tags/gdb-remote/"/>
+    
+      <category term="android" scheme="https://murphypei.github.io/tags/android/"/>
+    
+      <category term="native" scheme="https://murphypei.github.io/tags/native/"/>
+    
+  </entry>
   
   <entry>
     <title>LRU 缓存算法</title>
@@ -543,32 +573,6 @@
       <category term="贝叶斯定理" scheme="https://murphypei.github.io/tags/%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%AE%9A%E7%90%86/"/>
     
       <category term="概率论" scheme="https://murphypei.github.io/tags/%E6%A6%82%E7%8E%87%E8%AE%BA/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>父类成员函数调用子类成员函数</title>
-    <link href="https://murphypei.github.io//blog/2020/03/call-derived-function.html"/>
-    <id>https://murphypei.github.io//blog/2020/03/call-derived-function.html</id>
-    <published>2020-03-07T11:38:13.000Z</published>
-    <updated>2021-09-06T09:24:43.040Z</updated>
-    
-    <content type="html"><![CDATA[<p>最近遇到一个很有意思的问题，如果在父类成员函数中调用子类成员函数。这个应用场景不是很常见，但是有一些方法可以实现。</p><a id="more"></a><h4 id="通过函数指针"><a href="#通过函数指针" class="headerlink" title="通过函数指针"></a>通过函数指针</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 声明子类型</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// 声明子类对象指针</span></span><br><span class="line">    Derived *d;</span><br><span class="line">    <span class="comment">// 声明子类型的函数指针</span></span><br><span class="line">    <span class="keyword">void</span> (Derived::*f)(<span class="keyword">int</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 通过子类型对象和函数指针调用子类型函数</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f1</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">    </span>&#123; </span><br><span class="line">        (d-&gt;*f)(<span class="number">123</span>); <span class="comment">// 注意调用的写法</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span> :</span> <span class="keyword">public</span> Base</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f2</span><span class="params">(<span class="keyword">int</span> i)</span> </span></span><br><span class="line"><span class="function">    </span>&#123; </span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived f2: "</span> &lt;&lt; i &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 为继承得到的父类型的成员变量赋值</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f3</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        d = <span class="keyword">this</span>;</span><br><span class="line">        f = &amp;Derived::f2;<span class="comment">// 注意这里 &amp; 后面不能加括号</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Derived d;</span><br><span class="line">    d.f3();</span><br><span class="line">    d.f1();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>输出：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Derived f2: 123</span><br></pre></td></tr></table></figure><p>思路是这样的，在父类中声明子类成员变量指针和函数指针，并在父类成员方法中通过函数指针去调用。然后在子类中给继承得到的这些成员变量赋值，这样子类调用父类的方法的时候就能实现调用子类方法。</p><p>这里说两个关于类成员函数指针的知识点：</p><blockquote><ol><li>函数指针赋值要使用 <strong>&amp;</strong></li><li>使用 <strong>.*</strong> (实例对象)或者 <strong>-&gt;*</strong>（实例对象指针）调用类成员函数指针所指向的函数</li></ol></blockquote><h4 id="通过模板类"><a href="#通过模板类" class="headerlink" title="通过模板类"></a>通过模板类</h4><p>其实这个问题本来是让我用模板类实现。</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    T *t;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f1</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">    </span>&#123; </span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Base f1: "</span>&lt;&lt; t-&gt;val &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">        <span class="comment">// 模板类型即使看不到声明也可以调用</span></span><br><span class="line">        t-&gt;f2();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span> :</span> <span class="keyword">public</span> Base&lt;Derived&gt;</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f2</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">    </span>&#123; </span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived f2: "</span> &lt;&lt; val &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f3</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        val = <span class="number">123</span>;</span><br><span class="line">        t = <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Derived d;</span><br><span class="line">    d.f3();</span><br><span class="line">    d.f1();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>输出：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Base f1: 123</span><br><span class="line">Derived f2: 123</span><br></pre></td></tr></table></figure><p>其实思路类似，就是在父类中需要有一个占位符能表示子类。在前面函数指针实现中，我们用子类指针和函数指针作为声明（需要前置声明子类）占位符。而利用模板，我们不需要函数指针，模板类型本身就可以作为一种占位符。我们将模板类型当作子类类型，直接在父类成员中调用子类函数。另外，我们在子类定义时，继承的父类是利用子类模板实例化的一个类，然后在子类中给模板类型赋值为当前对象指针，这样就实现了调用。</p><p>其实这里我们主要是利用 t 是模板类型 T 的指针，这样即使不知道 t 的具体定义，也可以访问到其成员，可以调用到其方法，若非通过模板，就不能这样。</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;最近遇到一个很有意思的问题，如果在父类成员函数中调用子类成员函数。这个应用场景不是很常见，但是有一些方法可以实现。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="C/C++" scheme="https://murphypei.github.io/categories/C-C/"/>
-    
-    
-      <category term="C++11" scheme="https://murphypei.github.io/tags/C-11/"/>
-    
-      <category term="模板" scheme="https://murphypei.github.io/tags/%E6%A8%A1%E6%9D%BF/"/>
-    
-      <category term="函数指针" scheme="https://murphypei.github.io/tags/%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88/"/>
     
   </entry>
   
