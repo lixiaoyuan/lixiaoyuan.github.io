@@ -66,7 +66,7 @@
 <meta property="og:site_name" content="拾荒志">
 <meta property="og:description" content="使用 Android NDK 编译得到 Android native program，可以直接 push 到手机上运行，但是没办法直接用 gdb debug。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-09-06T10:09:46.500Z">
+<meta property="og:updated_time" content="2021-09-23T03:36:37.090Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用 gdbserver 调试 Android Native 程序">
 <meta name="twitter:description" content="使用 Android NDK 编译得到 Android native program，可以直接 push 到手机上运行，但是没办法直接用 gdb debug。">
@@ -264,11 +264,19 @@
                 
               
 
-              <time title="创建时间：2021-09-06 17:40:10 / 修改时间：18:09:46" itemprop="dateCreated datePublished" datetime="2021-09-06T17:40:10+08:00">2021-09-06</time>
+              <time title="创建时间：2021-09-06 17:40:10" itemprop="dateCreated datePublished" datetime="2021-09-06T17:40:10+08:00">2021-09-06</time>
             </span>
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-09-23 11:36:37" itemprop="dateModified" datetime="2021-09-23T11:36:37+08:00">2021-09-23</time>
+              </span>
             
           
             <span class="post-meta-item">
@@ -302,7 +310,7 @@
               
                 <span class="post-meta-item-text">本文字数：</span>
               
-              <span>726</span>
+              <span>782</span>
             </span>
           
             <span class="post-meta-item" title="阅读时长">
@@ -327,13 +335,14 @@
       
         <p>使用 Android NDK 编译得到 Android native program，可以直接 push 到手机上运行，但是没办法直接用 gdb debug。</p>
 <a id="more"></a>
-<p>为此，我们需要使用 gdbserver，也就是 gdb 远程调试功能。原理就不讲了，我自己尝试的过程中发现网上写的教程都是相互转载的，乱七八糟，不知所云。本文写原理（谷歌可查），仅仅记录下我已经确认可行的调试过程。</p>
+<p>为此，我们需要使用 gdbserver，也就是 gdb 远程调试功能。原理就不讲了，我自己尝试的过程中发现网上写的教程都是相互转载的，乱七八糟，不知所云。本文不写原理（谷歌可自行查），仅仅记录下我已经确认可行的调试过程。</p>
 <ol>
 <li>首先，把 <code>$NDK/prebuilt/android-arm64/gdbserver/gdbserver</code> 以及要调试的程序 push 到手机上（任意文件夹）。</li>
 <li>在手机上启动 gdbserver。<code>gdbserver :9090 &lt;exec&gt;</code>。其中 <code>:9090</code> 表示 gdbserver 监听手机的 9090 端口。会显示 <code>Listening on port 9090</code> 类似信息。如果有本地 lib，记得设置 <code>LD_LIBRARY_PATH</code> 环境变量。</li>
 <li>设置端口转发。<code>adb shell tcp:9090 tcp:9090</code>，表示将本地 9090 端口转发到手机的 9090 端口。</li>
 <li>本地启动 gdb。<code>$NDK/prebuilt/linux-x86_64/bin/gdb</code>。进入 gdb 调试页面。</li>
 <li>设置调试对象。<code>target remote :9090</code>。调试本地的 9090 端口，同时也是手机的 9090 端口，也就是 gdbserver，连接成功之后， gdbserver 那边会显示 <code>Remote debugging from host 127.0.0.1</code> 字样。</li>
+<li>启动。<code>continue</code>。启动会读取所有关联的库，特别慢。网上有一些设置读取位置的方法，我觉得实用性一般吧。</li>
 </ol>
 <p>Android gdbserver 和 Linux gdb 有一些命令不太一样，但是很多还是相同的。启动程序不用 r，用 continue。</p>
 <p>用 vscode 也可以，把上述流程弄到 vscode 的 task.json 中就行，只是觉得更麻烦了，所以没必要。</p>
@@ -395,6 +404,10 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
+              
+                <a href="/blog/2021/10/asr-fbank-mfcc.html" rel="prev" title="语音识别 FBank 和 MFCC 特征">
+                  语音识别 FBank 和 MFCC 特征 <i class="fa fa-chevron-right"></i>
+                </a>
               
             </div>
           </div>
@@ -462,7 +475,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">163</span>
+          <span class="site-state-item-count">165</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -511,7 +524,9 @@
         
           
         
-        <span class="site-state-item-count">17</span>
+          
+        
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -1356,7 +1371,23 @@
         
           
         
-        <span class="site-state-item-count">415</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">423</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -1427,12 +1458,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">581k</span>
+    <span title="站点总字数">585k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">16:08</span>
+    <span title="站点阅读时长">16:15</span>
 </div>
 
         
@@ -1543,7 +1574,7 @@
     });
     gitalk.render('gitalk-container');
   }, window.Gitalk);
-</script>
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/haru01.model.json"},"display":{"position":"left","width":250,"height":400},"mobile":{"show":false}});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/haru01.model.json"},"display":{"position":"left","width":250,"height":400},"mobile":{"show":false}});</script></body>
 </html>
