@@ -58,18 +58,20 @@
   };
 </script>
 
-  <meta name="description" content="虚怀若谷，大智若愚">
-<meta property="og:type" content="website">
-<meta property="og:title" content="拾荒志">
-<meta property="og:url" content="https://murphypei.github.io/categories/Go/index.html">
+  <meta name="description" content="golang 中的协程使用非常方便，但是协程什么时候结束是一个控制问题，可以用 select 配合使用。">
+<meta name="keywords" content="golang,select,case,timeout,after,chan">
+<meta property="og:type" content="article">
+<meta property="og:title" content="golang select 机制和超时">
+<meta property="og:url" content="https://murphypei.github.io/blog/2022/06/go-select-timeout.html">
 <meta property="og:site_name" content="拾荒志">
-<meta property="og:description" content="虚怀若谷，大智若愚">
+<meta property="og:description" content="golang 中的协程使用非常方便，但是协程什么时候结束是一个控制问题，可以用 select 配合使用。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2022-06-25T10:06:50.900Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="拾荒志">
-<meta name="twitter:description" content="虚怀若谷，大智若愚">
+<meta name="twitter:title" content="golang select 机制和超时">
+<meta name="twitter:description" content="golang 中的协程使用非常方便，但是协程什么时候结束是一个控制问题，可以用 select 配合使用。">
   <link rel="alternate" href="/atom.xml" title="拾荒志" type="application/atom+xml">
-  <link rel="canonical" href="https://murphypei.github.io/categories/Go/">
+  <link rel="canonical" href="https://murphypei.github.io/blog/2022/06/go-select-timeout">
 
 
 <script id="page-configurations">
@@ -77,13 +79,13 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false,
+    isPost: true,
     isPage: false,
     isArchive: false
   };
 </script>
 
-  <title>分类: Go | 拾荒志</title>
+  <title>golang select 机制和超时 | 拾荒志</title>
   <meta name="generator" content="Hexo 3.9.0">
   
 
@@ -211,27 +213,6 @@
 
     
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
 </nav>
 </div>
     </header>
@@ -249,127 +230,206 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
   
   
   
-  <div class="post-block category">
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">Go<small>分类</small>
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://murphypei.github.io/blog/2022/06/go-select-timeout.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="murphypei">
+      <meta itemprop="description" content="虚怀若谷，大智若愚">
+      <meta itemprop="image" content="/images/avatar_128.ico">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="拾荒志">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">golang select 机制和超时
+
+          
         </h2>
-      </div>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2022-06-25 14:24:59 / 修改时间：18:06:50" itemprop="dateCreated datePublished" datetime="2022-06-25T14:24:59+08:00">2022-06-25</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span>1.6k</span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span>3 分钟</span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>golang 中的协程使用非常方便，但是协程什么时候结束是一个控制问题，可以用 select 配合使用。</p>
+<a id="more"></a>
+<p>首先声明，golang 使用并不熟悉，本文仅仅是记录使用过程中遇到的一些坑。</p>
+<p>子协程和父协程的通信通常用 context 或者 chan。我遇到一个通常的使用场景，在子协程中尝试多次处理，父协程等待一段时间超时，我选择用 chan 实现。我以为 select 和 C++ 中 switch 类似，所以最开始代码类似如下：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> &#123;</span><br><span class="line">    <span class="keyword">select</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> &lt;-ctx.Done():</span><br><span class="line">            <span class="comment">// process ctx done</span></span><br><span class="line">        <span class="keyword">case</span> &lt;-time.After(time.Second * <span class="number">3</span>):</span><br><span class="line">            <span class="comment">// process after</span></span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="comment">// process code</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试发现无法实现 timeout，又仔细查看文档，才发现 golang 中 select 另有玄机。废话少说，直接总结要点：</p>
+<ul>
+<li>select 中的 case 必须是进行 chan 的手法操作，也就是只能在 case 中操作 chan，并且是<strong>非阻塞接收</strong>。</li>
+<li>select 中的 case 是同时监听的，多个 case 同时操作，并未 switch 中一个个顺序判断。如果多个 case 满足要求，随机执行一个，如果一个没有则阻塞当前的协程（没有 default 情况下）。<strong>很类似 Linux 文件符操作的 select 语义</strong>。</li>
+<li>上面说的阻塞是没有 default 的情况下，如果有 default，则执行 default，然后退出 select，也就是不会阻塞当前协程。</li>
+</ul>
+<p>回到上述代码，我这个 select 会一直不断的执行 default，<code>time.After</code> 生成的 chan 并不会被阻塞判断，所以根本无法完成我想要的效果。理解了之后重新修改代码：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">done := <span class="built_in">make</span>(char <span class="keyword">int</span>)</span><br><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(c <span class="keyword">chan</span> <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        <span class="comment">// process code</span></span><br><span class="line">        <span class="keyword">if</span> &#123;</span><br><span class="line">            c &lt;- <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    c &lt;- <span class="number">0</span></span><br><span class="line">&#125;(done)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> &lt;-ctx.Done():</span><br><span class="line">        <span class="comment">// process ctx done</span></span><br><span class="line">    <span class="keyword">case</span> &lt;-time.After(time.Second * <span class="number">3</span>):</span><br><span class="line">        <span class="comment">// process after</span></span><br><span class="line">    <span class="keyword">case</span> &lt;-done:</span><br><span class="line">        <span class="comment">// process code</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>开一个新的协程去不断尝试，在外的三个 case 有一个满足，则会执行。但是这里有一个问题非常需要注意：<strong>子协程什么时候退出？</strong>。</p>
+<p>因为 gorountine 不能被强制 kill，所以在上述超时的情况下，select 语句执行 <code>case time.After</code> 之后退出，<code>done</code> 这个 chan 已经没有接受方了，因此既没有接受者，又没有缓冲区，结合 chan 的特性，则子协程会一直阻塞无法退出，所以本质上这个实现会导致子协程累积下去，也就是<strong>协程泄露</strong>，可能会使资源耗尽。</p>
+<p>如何避免上述问题呢？一个很简单的想法就是提供缓冲区，<code>done := make(char int, 1)</code>，这样即使没有接收方，子协程也能完成发送，不会被阻塞。</p>
+<p>还要一种办法，上面说了，select 操作 chan，并且可以指定 default，那是不是有思路了呢？</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> &#123;</span><br><span class="line">    <span class="keyword">select</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> done &lt;- <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们尝试往 chan 中发送，如果发不出去，则就退出，也实现了目的。</p>
+<p>最后总结一下，goroutine 泄露的防范条例：</p>
+<ul>
+<li>创建 goroutine 时就要想好该 goroutine 该如何结束。</li>
+<li>使用 chan 时，要考虑到 chan 阻塞时协程可能的行为。</li>
+<li>实现循环语句时注意循环的退出条件，避免死循环。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>murphypei</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://murphypei.github.io/blog/2022/06/go-select-timeout.html" title="golang select 机制和超时">https://murphypei.github.io/blog/2022/06/go-select-timeout.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+</div>
 
       
 
-  
-  
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/golang/" rel="tag"># golang</a>
+            
+              <a href="/tags/select/" rel="tag"># select</a>
+            
+              <a href="/tags/case/" rel="tag"># case</a>
+            
+              <a href="/tags/timeout/" rel="tag"># timeout</a>
+            
+              <a href="/tags/after/" rel="tag"># after</a>
+            
+              <a href="/tags/chan/" rel="tag"># chan</a>
+            
+          </div>
+        
 
-  
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/blog/2022/04/link-noneed-lib.html" rel="next" title="C++ 链接一个不需要的库(--no-as-needed)">
+                  <i class="fa fa-chevron-left"></i> C++ 链接一个不需要的库(--no-as-needed)
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
     
-    <div class="collection-year">
-      <h2 class="collection-header">2021</h2>
-    </div>
-  
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-          <a class="post-title-link" href="/blog/2021/06/go-context.html" itemprop="url">
-            <span itemprop="name">Go 中 context 的使用方式</span>
-          </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2021-06-07T02:45:28+08:00"
-              content="2021-06-07">
-          06-07
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-  
-  
-
-  
-    
-    <div class="collection-year">
-      <h2 class="collection-header">2017</h2>
-    </div>
-  
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-          <a class="post-title-link" href="/blog/2017/07/go-jsonrpc.html" itemprop="url">
-            <span itemprop="name">Go 中使用 jsonrpc 进行远程调用</span>
-          </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-07-03T00:00:00+08:00"
-              content="2017-07-03">
-          07-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-  
-  
-
-  
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-          <a class="post-title-link" href="/blog/2017/06/go-pointer.html" itemprop="url">
-            <span itemprop="name">Go在函数中进行指针传递遇到的小问题</span>
-          </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-06-29T00:00:00+08:00"
-              content="2017-06-29">
-          06-29
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    </div>
   </div>
   
   
   
+  </article>
 
-  
-
+  </div>
 
 
           </div>
           
+    
+    <div class="comments" id="gitalk-container"></div>
+  
 
         </div>
           
@@ -384,6 +444,11 @@
 
   <aside class="sidebar">
     <div class="sidebar-inner">
+        
+        
+        
+        
+      
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
@@ -412,7 +477,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">170</span>
+          <span class="site-state-item-count">171</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1350,7 +1415,15 @@
         
           
         
-        <span class="site-state-item-count">436</span>
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">440</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -1421,12 +1494,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">602k</span>
+    <span title="站点总字数">603k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">16:43</span>
+    <span title="站点阅读时长">16:46</span>
 </div>
 
         
@@ -1490,7 +1563,7 @@
       var s = document.getElementsByTagName("script")[0];
       s.parentNode.insertBefore(bp, s);
     })();
-  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </script>
 
 
 
@@ -1520,6 +1593,24 @@
 
   
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'e14928c5d4e586a1be33',
+      clientSecret: 'b58488475e69824177de7fa4e52325a0de1dbdb7',
+      repo: 'murphypei.github.io',
+      owner: 'murphypei',
+      admin: ['murphypei'],
+      id: '561b9c9e7b7ed2bf106ae72872349761',
+        language: 'zh-CN',
+      
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/haru01.model.json"},"display":{"position":"left","width":250,"height":400},"mobile":{"show":false}});</script></body>
 </html>
