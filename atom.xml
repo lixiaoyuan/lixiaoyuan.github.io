@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://murphypei.github.io/"/>
-  <updated>2022-06-25T10:06:50.900Z</updated>
+  <updated>2022-12-07T03:57:08.490Z</updated>
   <id>https://murphypei.github.io/</id>
   
   <author>
@@ -15,6 +15,62 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>STL 旋转序列算法 rotate</title>
+    <link href="https://murphypei.github.io//blog/2022/12/stl-rotate.html"/>
+    <id>https://murphypei.github.io//blog/2022/12/stl-rotate.html</id>
+    <published>2022-12-07T03:35:51.000Z</published>
+    <updated>2022-12-07T03:57:08.490Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近开发需要不管刷新缓冲区，发现了一个有用的 STL 算法。</p><a id="more"></a><p>先说明应用场景：我有一块缓冲区 vector，不断接收数据和消费数据（生产消费模型），接收数据就放在末尾，消费头部数据，消费完删除。之前用 realloc 和 memmove 来操作，改为 vector 之后如果每次搬移数据就很麻烦了，查了一下发现 <a href="https://en.cppreference.com/w/cpp/algorithm/rotate" target="_blank" rel="noopener">rotate</a> 配合 resize 可以搞定。</p><p>std::rotate() 的第一个参数是这个序列的开始迭代器；第二个参数是指向新的第一个元素的迭代器，<strong>它必定在序列之内</strong>。第三个参数是这个序列的结束迭代器。意思是将第二个参数的元素旋转到第一个参数的位置，旋转的序列是第一个参数到第三个参数的范围。</p><p>你可以想象第一个参数 ~ 第三个参数之间的元素序列组成一个圆盘，左转就是逆时针旋转，直到第二个参数转到第一个参数的位置，旋转结束。</p><p>可以参数<a href="http://c.biancheng.net/view/609.html" target="_blank" rel="noopener">图解</a></p><p>旋转完成后，头部就变到 vector 末尾了，用 resize 可以标记删除掉这些元素。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近开发需要不管刷新缓冲区，发现了一个有用的 STL 算法。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="C/C++" scheme="https://murphypei.github.io/categories/C-C/"/>
+    
+    
+      <category term="C++" scheme="https://murphypei.github.io/tags/C/"/>
+    
+      <category term="STL" scheme="https://murphypei.github.io/tags/STL/"/>
+    
+      <category term="stl" scheme="https://murphypei.github.io/tags/stl/"/>
+    
+      <category term="rotate" scheme="https://murphypei.github.io/tags/rotate/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>vscode C++ 开发之使用 clangd、C/C++、clang-format</title>
+    <link href="https://murphypei.github.io//blog/2022/12/vscode-clang-format.html"/>
+    <id>https://murphypei.github.io//blog/2022/12/vscode-clang-format.html</id>
+    <published>2022-12-07T03:25:55.000Z</published>
+    <updated>2022-12-07T03:57:08.490Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近比较忙，废话少说，vscode 开发 C/C++ 需要很繁琐的配置，之前也说过 launch 和 tasks 的配置。这篇文章主要结合自身使用经历讲讲 C++ 相关插件。</p><a id="more"></a><p>vscode 最常用的几个 C++ 插件（不包含 cmake）就是微软的 C/C++、LLVM 的 clangd，以前我也使用 C/C++，但是智能补全和提示、include 路径都太差劲了，转投 clangd 了，确实好用。所以不废话，直接推荐使用 clangd，不过 C/C++ 也在用，为了二者不冲突，需要配置如下：</p><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">"C_Cpp.autocomplete": "Disabled",</span><br><span class="line">"C_Cpp.clang_format_fallbackStyle": "Visual Studio",</span><br><span class="line">"C_Cpp.clang_format_sortIncludes": true,</span><br><span class="line">"C_Cpp.clang_format_style": "file",</span><br><span class="line">"C_Cpp.default.compilerPath": "/usr/bin/g++",</span><br><span class="line">"C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",</span><br><span class="line">"C_Cpp.default.cppStandard": "c++11",</span><br><span class="line">"C_Cpp.default.cStandard": "c99",</span><br><span class="line">"C_Cpp.default.intelliSenseMode": "gcc-x64",</span><br><span class="line">"C_Cpp.errorSquiggles": "Disabled",</span><br><span class="line">"C_Cpp.intelliSenseEngine": "Disabled",</span><br><span class="line">"clangd.arguments": [</span><br><span class="line">// 在后台自动分析文件（基于complie_commands)</span><br><span class="line">"--background-index",</span><br><span class="line">"--compile-commands-dir=$&#123;workspaceFolder&#125;/build",</span><br><span class="line">"-j=8",</span><br><span class="line">// 支持 .clangd 配置</span><br><span class="line">"--enable-config",</span><br><span class="line">"--clang-tidy",</span><br><span class="line">"--clang-tidy-checks=performance-*,bugprone-*",</span><br><span class="line">"--log=verbose",</span><br><span class="line">"--pretty",</span><br><span class="line">// 全局补全（会自动补充头文件）</span><br><span class="line">"--all-scopes-completion",</span><br><span class="line">// 更详细的补全内容</span><br><span class="line">"--completion-style=detailed",</span><br><span class="line">// 补充头文件的形式</span><br><span class="line">"--header-insertion=iwyu",</span><br><span class="line">// pch优化的位置</span><br><span class="line">"--pch-storage=memory",</span><br><span class="line">"--function-arg-placeholders",</span><br><span class="line">],</span><br></pre></td></tr></table></figure><p>clangd 的 include 可以通过如下配置：</p><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">"clangd.fallbackFlags": [</span><br><span class="line">    "-std=c++11",</span><br><span class="line">    "-I/usr/include/c++/9",</span><br><span class="line">    "-I/usr/include/opencv4",</span><br><span class="line">    "-I$&#123;workspaceFolder&#125;/src/",</span><br><span class="line">]</span><br></pre></td></tr></table></figure><p>clangd 虽然很香，但是有个明显的缺点，就是它一定要使用自身的 clang-format 来格式化，而且无法配置使用 .clang-format 文件。为此，需要安装另一个插件 xaver clang-format。安装完成后配置格式化的程序：</p><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">"[cpp]": &#123;</span><br><span class="line">// "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"</span><br><span class="line">"editor.defaultFormatter": "xaver.clang-format"</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure><p>这个插件可以直接调用项目根目录下的 .clang-format 文件来格式化。</p><p>最后，有条件的推荐使用 clion 来开发和调试 C++。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近比较忙，废话少说，vscode 开发 C/C++ 需要很繁琐的配置，之前也说过 launch 和 tasks 的配置。这篇文章主要结合自身使用经历讲讲 C++ 相关插件。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="C/C++" scheme="https://murphypei.github.io/categories/C-C/"/>
+    
+    
+      <category term="C++" scheme="https://murphypei.github.io/tags/C/"/>
+    
+      <category term="vscode" scheme="https://murphypei.github.io/tags/vscode/"/>
+    
+      <category term="clangd" scheme="https://murphypei.github.io/tags/clangd/"/>
+    
+      <category term="clang-format" scheme="https://murphypei.github.io/tags/clang-format/"/>
+    
+  </entry>
   
   <entry>
     <title>golang select 机制和超时</title>
@@ -529,62 +585,6 @@
       <category term="Python.h" scheme="https://murphypei.github.io/tags/Python-h/"/>
     
       <category term="apt-pkg" scheme="https://murphypei.github.io/tags/apt-pkg/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>目标检测中 Anchor 与 Loss 计算的梳理</title>
-    <link href="https://murphypei.github.io//blog/2020/10/anchor-loss.html"/>
-    <id>https://murphypei.github.io//blog/2020/10/anchor-loss.html</id>
-    <published>2020-10-19T08:59:34.000Z</published>
-    <updated>2021-09-06T09:24:43.040Z</updated>
-    
-    <content type="html"><![CDATA[<p>anchor 是一类目标检测方法种的一个核心概念，其本质是一个预设的框，但是这个框也为 loss 计算带来一些麻烦。</p><a id="more"></a><p>对于一般的目标检测 loss 计算，通常分为几部分。比如 yolo 系列分为 objectness（是否包含目标）、classification（目标分类）、boundingbox-regression（目标位置）。其中，每个样本都需要计算 objectness 得分的损失，正样本需要计算 classification 和 bbox-regression 损失，其中每种损失又有不同的计算方式和组合方法，比如 bbox-regression 有 D_IoU、G_IoU、C_IoU 等等，组合方法有 Focal Loss 等等。但是这些不是我们这篇文章关注的重点。</p><p>对于目标检测我们要搞明白一个核心问题：<strong>如何生成参与 loss 计算的样本</strong>？anchor 和 ground-truth 的纠缠不休就是在这个问题上，各种框混杂一起。要搞明白这个问题，我们把带 anchor 的目标检测中出现各种框的核心概念一一剥开。</p><p>一般来说，带 anchor 的目标检测包含以下几种框：</p><ol><li>ground-truth，简称 gt，标注生成的框，包含位置信息和类别信息。</li><li>anchor，也成为先验框，尺寸预先设置好的框，一般在 feature map 上，每个像素点（也称为 cell）有多个，每个大小形状都不一样。可以通过 k-means 等方法生成适合数据集的尺寸，同时大小不同的尺寸也和模型的多个检测分支对应。</li><li>predict，也称为预测框，网络的 detect 层的输出信息，大小通常是 [n, h, w, (nc + 4 + 1)]，n 表示 feature map 上每 cell 的 anchor 数量，h 和 w 是 feature map 的大小，nc 表示类别得分，4 表示位置信息，1 表示 objectness 得分。</li></ol><p>写的越多越杂乱，所以不写太多计算，只要记住这些核心概念，下面来说明每种框之间的关联：</p><ol><li>anchor 和 gt 相互作用，通过筛选手段，确定哪个 anchor 负责预测哪个 gt，不同检测方法中筛选手段不同，并且有的规定一个 gt 必须有一个 anchor 负责预测，有的则选择忽略某些 gt，有的一个 gt 可以有多个 anchor 对应。</li><li>predict 和 anchor 一一对应。首先可以明确，每个 predict 都是对应一个 anchor 的（其实现在大部分检测方法比如 yolo，predict 输出的并不是实际坐标，需要通过 anchor 解码）。当 1 中确定某个 anchor 有负责预测 gt 之后，这个 anchor 对应的 predicts 就是正样本，其余就是负样本。predicts 的输出结果和 gt 相互作用，计算 loss。</li></ol><p>总结以上核心：<strong>正负样本通常由 gt 和先验框 anchor 匹配生成，参与计算的是 anchor 的和 gt（只有尺寸，没有类别），而计算 loss 则是其对应的 predict 和 gt（包含类别信息）</strong>。这句话就点明了 3 种框的关系，可以看出 anchor 是桥梁，非常重要。</p><p>有了以上概念，我们来实际操作解读以下经典的目标检测中一些具体实际操作。</p><h3 id="Faster-RCNN"><a href="#Faster-RCNN" class="headerlink" title="Faster-RCNN"></a>Faster-RCNN</h3><p>我的老朋友，最爱。faster-rcnn 属于 two-stage，anchor 主要是在第一层 RPN 中用到。我们知道 RPN 用于生成 RoI。我们把 RPN 网络输出的就是 predicts，那么如何计算 Loss 呢？</p><p>依据上述步骤，首先就是 anchor 和 gt 的匹配。在 faster-rcnn 中分为：</p><ol><li>初始化每个 anchor 的 mask  为 -1，-1 表示这个 anchor 被忽略，不参与 loss 计算。</li><li>计算每个 gt 和 每个 anchor 的 iou。</li><li>对于一个 anchor，如果其和所有 gt 的 iou 都小于阈值 neg_iou_thr，则标记为负样本，mask 设为 0；如果最大 iou 大于阈值 pos_iou_thr，则标记为正样本。此时有一些 gt 是没有 anchor 负责预测的，这一步的意思是挑选优质的正样本和负样本。</li><li>对于所有 gt，如果其和某个 anchor 的 iou 大于阈值 min_pos_iou，则也将这些 anchor 标记为正样本，min_pos_ios &lt;= pos_iou_thr。这一步是为了增加正样本的数量（如果不需要增加正样本数量，则可以设置只和最大 iou 的 anchor 匹配），一个 gt 可能会由多个 anchor 负责预测。通过本步骤，可以最大程度保证每个 gt 都有 anchor 负责预测，<strong>如果还是小于 min_pos_iou，那就没办法了，这个 gt 被忽略了</strong>。这一步引入的 anchor 因为 iou 较少，质量较低。</li></ol><p>上述规则将 anchor 标记分类（anchor_target_layer 实现），正样本都有对应的 gt 用于计算 bbox-regression 损失，同时正负样本本身又可以用于计算 objectness loss，直接将每个 anchor 对应的 predict 带入计算即可。没有用到的 anchor（标记为 -1），计算 loss 的时候被忽略。另外，RPN 没有 classification 损失。</p><h3 id="YOLO-V2-V3"><a href="#YOLO-V2-V3" class="headerlink" title="YOLO V2/V3"></a>YOLO V2/V3</h3><p>one-stage 最爱。废话少说，yolo v2 步骤如下：</p><ol><li>初始化，标记所有 anchor 为负样本。</li><li>对于一个 gt，确定其中心落在哪个 cell，计算该 cell 的所有 anchor 与这个 gt 的 iou，取最大值，这个 anchor 标记为正样本，负责预测该 gt。<strong>这一步计算 iou 时只考虑形状，不考虑框的位置</strong>。具体做法就是将 anchor 和 gt 这两个框的左上角对齐，然后计算 iou。这一步还隐含一个假设，多个 gt 不会落到同一个 cell 中。</li><li>如果一个 anchor 经过 1 被标记为负样本，但是其与某个 gt 的 iou 大于某个阈值（0.6），则将其标记为忽略（低质量的负样本）。这里需要注意，<strong>yolo v2/v3 中这一步计算使用的是 anchor 预测值，而不是预设的 anchor</strong>。</li></ol><p>区分了正负样本之后就可以用于计算 loss 了，类似 faster-rcnn。</p><p>我参考了这篇<a href="https://zhuanlan.zhihu.com/p/35325884" target="_blank" rel="noopener">YOLOv2原理与实现</a>，上述原理在代码中实现是倒过来的，同时在开始时还有计算 predict 和 anchor  的位置偏移，这个能够加快 predict 的形状向 anchor 的形状收敛。因为 yolo 中的 anchor 是聚合而来，本身就比较合理。仔细看下面的 loss 计算公式：</p><p><img src="/images/posts/dl/anchor/yolov2_loss.jpg" alt></p><ol><li>求和公式中 W H A 分别表示 feature map 的长、宽以及每个 cell 的 anchor 数量。</li><li>第一项是负样本，只计算 objectness 的置信度误差。</li><li>第二项是 anchor 先验框和预测框的坐标误差，只计算前 12800 个迭代，加速预测框向先验框的收敛。</li><li>第三项是正样本，其中又包含三项：<ol><li>第一项是预测框与 gt 的坐标误差（coord）；</li><li>第二项是是 objectness 置信度误差（obj）；</li><li>第三项是分类误差。</li></ol></li></ol><p>上述公式弄明白了，也就基本理解了各种框的用途和意义了。v3 和 v2 一样是基于 max iou 的匹配规则，只不过有多个检测分支，其规定一个 gt 不可能出现在多个检测分支上，也就是每个 gt 取三个检测分支上 anchor 匹配最大的那个。</p><h3 id="YOLO-V5"><a href="#YOLO-V5" class="headerlink" title="YOLO V5"></a>YOLO V5</h3><p>yolo v5 相对 v2/v3 变动很大，主要是匹配规则变了，首先明确一点，v5 和 v3 一样，同样有 3 个检测分支，但是v5 中的匹配是逐层进行的，每一层互不影响，也就是说一个 gt 可以与多个检测层的 anchor 匹配。具体规则如下（以下规则是逐层进行的）：</p><ol><li>对于一个 gt，计算其与当前层的 anchor 是否匹配，匹配是通过 shape 而不是 iou。以 h 为例，就是 gt_h/anchor_h 要大于一个 1/anchor_t，小于 anchor_t，anchor_t 默认设置为 4.0。w 同理。如果不匹配，则说明该 gt 和 anchor 匹配度不够，<strong>在当前层的检测中舍弃掉这个 gt</strong>。因此在检测小目标的 detect 层，比如下采样为 8 的 P3 层，一个大目标 gt 可能会被舍弃，认为是背景。</li><li>对于剩余 gt，计算其中心落在哪个 cell 中，同时利用四舍五入方法，找出最近的两个 cell，认为这 3 个 cell 都负责预测这个 gt。很明显，通过这种方法，正样本的数量将明显增多。<ol><li>一个 cell 相邻的有上下左右 4 个cell，根据中心点在当前 cell 中的偏移来找出和中心点比较近的两个相邻 cell。</li></ol></li></ol><p><img src="/images/posts/dl/anchor/yolov5_near_cell.jpg" alt></p><p>代码中的具体做法是：在任何一预测层，将每个 gt 复制和 anchor 个数一样多的数目（3个），然后将 gt 和 anchor 一一对应计算，去除本层不匹配的 gt，然后对 gt 原始中心点网格坐标扩展两个邻居像素，因此每个 gt 总共有 3 个 cell 上的若干个 anchor 负责预测。有个细节需要注意，前面 shape 过滤时候是不考虑 xy 坐标的，也就是说 gt 的 wh 是和所有 anchor 匹配的，会导致找到的邻居也相当于进行了 shape 过滤规则。详见 <code>build_targets</code> 函数，可以参考解析：<a href="https://zhuanlan.zhihu.com/p/183838757" target="_blank" rel="noopener">yolov5深度可视化解析</a> 。</p><p>yolo v5 的改动造成的变化主要如下：</p><ol><li>不同于 yolov3 和 v4，其 gt 可以跨层预测，即有些 gt 在多个预测层都算正样本。</li><li>不同于 yolov3 和 v4，其 gt 匹配数范围扩大，明显增加了很多正样本。（但是引入了很多低质量的负样本）</li><li>不同于 yolov3 和 v4，有些 gt 由于和 anchor 匹配度不高，而变成背景。</li></ol><p>有了正负样本，v5 的 loss 计算也很简单，classification 和 objectness confidence 分支都是 bce loss，bbox regression 直接采用 giou loss。</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;anchor 是一类目标检测方法种的一个核心概念，其本质是一个预设的框，但是这个框也为 loss 计算带来一些麻烦。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="DeepLearning" scheme="https://murphypei.github.io/categories/DeepLearning/"/>
-    
-    
-      <category term="梯度消失" scheme="https://murphypei.github.io/tags/%E6%A2%AF%E5%BA%A6%E6%B6%88%E5%A4%B1/"/>
-    
-      <category term="ReLU" scheme="https://murphypei.github.io/tags/ReLU/"/>
-    
-      <category term="LeakyReLU" scheme="https://murphypei.github.io/tags/LeakyReLU/"/>
-    
-      <category term="激活函数" scheme="https://murphypei.github.io/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ReLU 激活函数中神经元死亡问题</title>
-    <link href="https://murphypei.github.io//blog/2020/09/relu-dying.html"/>
-    <id>https://murphypei.github.io//blog/2020/09/relu-dying.html</id>
-    <published>2020-09-25T08:59:34.000Z</published>
-    <updated>2021-09-06T09:24:43.040Z</updated>
-    
-    <content type="html"><![CDATA[<p>最近在看 MobileNetV3 的结构特征，又碰到了新的激活函数，查看了其与 ReLU 的联系，联想到之前看到过的 ReLU 的问题，做个记录。</p><a id="more"></a><p>ReLU 激活函数可以算作是深度学习领域的 GOAT 了，虽然现在出现了很多变种和发展，但是综合使用范围和效果，其当之无愧。ReLU 之所以能获得广泛认可和应用，离不开自身的特性（图我就不画了）。</p><ol><li>单侧抑制。当输入小于 0 时，神经元处于抑制状态，也就是输出为 0。</li><li>宽阔的激活边界。当输入大于 0 时，神经元全部出于激活状态，激活值取值边界无穷大，无饱和区。<ol><li>Sigmoid 存在梯度小时问题，就是因为当出于饱和区时，导数趋近于 0，更新缓慢，拖累收敛。</li><li>另一方面，Sigmoid 这类激活函数的导数绝对值小于 1，链式法则的情况下在连乘的时候很容易迅速变小为接近于 0，也是导致梯度消失的原因。</li></ol></li><li>稀疏性。相比于 Sigmoid 之类的激活函数，稀疏性是 ReLU 的优势。Sigmoid 把抑制区设置为一个极小值，但是不为 0，因此要参与运算，而 ReLU 的抑制区的结果直接为 0，不参与后续计算，简单粗暴的造成网络稀疏性，而且计算十分简单。<ol><li>稀疏性和单侧抑制有很多生物神经学上的解释，对于大多数深度学习从业者而言，其计算简单和对网络稀疏性（防止过拟合）的优点才是真正关注的。</li></ol></li></ol><p>ReLU 凭借上述优点获得了无数青睐，但是也不能忽视其存在的不足，甚至一些不足就是由于其自身特性带来的。比如最常见的 ReLU Dying 问题。</p><p><strong>ReLU Dying 问题是指当出现异常输入时，在反向传播中会产生大的梯度，这种大的梯度会导致神经元死亡和梯度消失</strong>。等等，ReLU 不就是为了解决梯度消失的问题吗？我们提取这里的关键词，异常输入，大梯度，神经元死亡，一一解释。</p><p><img src="/images/posts/dl/relu/neural_cell.jpg" alt></p><p>上图是一个典型的神经元。</p><p>现在假设，这个神经元已经经过若干次迭代，其参数 $(\vec w, b)$ 已经迭代得趋于稳定。现在，神经元接收到了一个<strong>异常输入</strong> $\vec x$。比方说，它的某一维特征 $x_i$ 与对应的权重 $w_i$ 的乘积 $w_ix_i$ 非常大。一般来说，这意味着 $x_i$ 的绝对值非常大。于是，ReLU 的输入就会很大，对应 ReLU 的输出 $y$ 也就会很大。好了，假设这个 ReLU 神经元期望的输出（ground truth）是 $\hat y$，这个时候损失就会很大——损失一般是 $\lvert y - \hat y\rvert$ 的增函数，记为 $f\bigl(\lvert y - \hat y\rvert\bigr)$。</p><p>于是，在反向传播过程中，传递到 ReLU 的输入时的梯度就是 $g = f\bigl(\lvert y - \hat y\rvert\bigr)$ 。考虑对于偏置 $b$ 有更新：</p><script type="math/tex; mode=display">g = f\bigl(\lvert y - \hat y\rvert\bigr)</script><p>考虑到<strong>大梯度</strong> $g$ 是一个很大的正数，于是 $b$ 可能被更新为一个很小的负数。此后，对于常规输入来说，ReLU 的输入大概率是个负数。这也就是说，ReLU 大概率是关闭的。这时，梯度无法经 ReLU 反向传播至 ReLU 的输入函数。也就是说，这个神经元的参数再也不会更新了。这就是所谓的<strong>神经元死亡</strong>。</p><p>如此看来，尽管 ReLU 解决了因激活函数导数的绝对值小于 1，在反向传播连乘的过程中迅速变小消失至 0 的问题，但<strong>由于它在输入为负的区段导数恒为零，而使得它对异常值特别敏感</strong>。这种异常值可能会使 ReLU 永久关闭，而杀死神经元。</p><p>由此可见，神经网络中的梯度消失问题是个多元化的问题，不仅仅局限于由于激活函数导数连乘导致的梯度消失。</p><p>话说回来，很多激活函数比如 LeakyReLU 把小于 0 的输入的输出不设为 0，从而缓解这个问题，其实现在这个问题已经被 BN 解决了。回到上述我们分析的原因，导致 ReLU Dying 的前提是异常输入，如果 Conv-BN-ReLU 这种结构，由于 BN 的归一化操作，异常输入基本不存在了，所以这个问题也被解决了，这也是目前 ReLU 仍然流行使用的原因。</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;最近在看 MobileNetV3 的结构特征，又碰到了新的激活函数，查看了其与 ReLU 的联系，联想到之前看到过的 ReLU 的问题，做个记录。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="DeepLearning" scheme="https://murphypei.github.io/categories/DeepLearning/"/>
-    
-    
-      <category term="梯度消失" scheme="https://murphypei.github.io/tags/%E6%A2%AF%E5%BA%A6%E6%B6%88%E5%A4%B1/"/>
-    
-      <category term="ReLU" scheme="https://murphypei.github.io/tags/ReLU/"/>
-    
-      <category term="LeakyReLU" scheme="https://murphypei.github.io/tags/LeakyReLU/"/>
-    
-      <category term="激活函数" scheme="https://murphypei.github.io/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/"/>
     
   </entry>
   
